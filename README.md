@@ -1,6 +1,7 @@
 # dmerkle
 
-[! [License](https://img.shields.io/badge/license-The%20Unlicense-blue)]
+![License](https://img.shields.io/badge/license-The%20Unlicense-blue)
+![WIP](https://img.shields.io/badge/Work%20In%20Progress-red)
 
 This library is a work In Progress.
 
