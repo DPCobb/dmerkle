@@ -6,7 +6,7 @@ use DMerkle\DMerkle_Exception;
 
 class DMerkle_Block
 {
-    
+
     public array $block_data;
 
     public function __construct(array $block_data)
@@ -27,7 +27,7 @@ class DMerkle_Block
     public function hashTransaction($transaction): string
     {
         if (!is_string($transaction)) {
-            //$transaction = json_encode($transaction);
+            $transaction = json_encode($transaction);
         }
         return hash('sha256', hash('sha256', $transaction));
     }
