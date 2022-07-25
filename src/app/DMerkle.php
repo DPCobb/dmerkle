@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace DMerkle;
 
 use DMerkle\DMerkle_Exception;
+use DMerkle\DMerkle_Utility;
 
 class DMerkle
 {
@@ -16,6 +17,7 @@ class DMerkle
     {
         $this->block_unique_id = hash('sha256', bin2hex(openssl_random_pseudo_bytes(32)) . microtime());
         $this->checkMaxBlockSizeIsOk();
+        $this->DMerkle_Utility = new DMerkle_Utility;
     }
 
     public function checkMaxBlockSizeIsOk(): void
@@ -47,21 +49,6 @@ class DMerkle
     }
 
     /**
-     * Make sure our level always has pairs
-     *
-     * @param array $transactions
-     * @return array
-     */
-    public function getLevelPairs(array $transactions): array
-    {
-        if (count($transactions) % 2 !== 0) {
-            $last_transaction = count($transactions) - 1;
-            $transactions[count($transactions)] = $transactions[$last_transaction];
-        }
-        return $transactions;
-    }
-
-    /**
      * Calculate the hashes for a block level
      *
      * @param array $transaction_block
@@ -73,16 +60,16 @@ class DMerkle
         $hashes_out = [];
 
         for ($i = 0; $i < count($transaction_block); $i++) {
-            $transaction_block = $this->getLevelPairs($transaction_block);
+            $transaction_block = $this->DMerkle_Utility->getLevelPairs($transaction_block);
             $left_sibling = is_array($transaction_block[$i]) ? json_encode($transaction_block[$i]) : $transaction_block[$i];
             $i++;
             $right_sibling = is_array($transaction_block[$i]) ? json_encode($transaction_block[$i]) : $transaction_block[$i];
 
             if ($level === 0) {
-                array_push($hashes_out, $this->hashTransaction($left_sibling));
-                array_push($hashes_out, $this->hashTransaction($right_sibling));
+                array_push($hashes_out, $this->DMerkle_Utility->hashTransaction($left_sibling));
+                array_push($hashes_out, $this->DMerkle_Utility->hashTransaction($right_sibling));
             } else {
-                array_push($hashes_out, $this->hashTransaction($left_sibling . $right_sibling));
+                array_push($hashes_out, $this->DMerkle_Utility->hashTransaction($left_sibling . $right_sibling));
             }
         }
  
@@ -124,19 +111,5 @@ class DMerkle
             'base'      => [ $this->hash_tree[0] ],
             'full_tree' => $this->hash_tree
         ];
-    }
-
-    /**
-     * Hash transactions
-     *
-     * @param mixed $transaction
-     * @return string
-     */
-    public function hashTransaction($transaction): string
-    {
-        if (!is_string($transaction)) {
-            $transaction = json_encode($transaction);
-        }
-        return hash('sha256', hash('sha256', $transaction));
     }
 }

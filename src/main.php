@@ -8,7 +8,7 @@ use DMerkle\DMerkle_Block;
 $m = new DMerkle;
 $transactions = [];
 
-for ($i = 1; $i <= 10; $i++) {
+for ($i = 1; $i <= 6; $i++) {
     array_push($transactions, [$i]);
 }
 
@@ -16,9 +16,8 @@ $m->setBlockData($transactions);
 $m->runBlockCalculation();
 $block_data = $m->createBlockData();
 
-//var_dump($block_data);
+var_dump($block_data);
 
 $block = new DMerkle_Block($block_data);
-$check = $m->hashTransaction([1]);
 
-var_dump($block->transactionIsPartOfBlock($check, $block_data['header']['root_hash']));
+var_dump($block->transactionIsPartOfBlock([1], $block_data['header']['root_hash']));

@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace DMerkle;
 
 use DMerkle\DMerkle_Exception;
+use DMerkle\DMerkle_Utility;
 
 class DMerkle_Block
 {
-
     public array $block_data;
 
     public function __construct(array $block_data)
@@ -17,20 +17,7 @@ class DMerkle_Block
         }
 
         $this->block_data = $block_data;
-    }
-
-    /**
-     * Hash transactions
-     *
-     * @param mixed $transaction
-     * @return string
-     */
-    public function hashTransaction($transaction): string
-    {
-        if (!is_string($transaction)) {
-            $transaction = json_encode($transaction);
-        }
-        return hash('sha256', hash('sha256', $transaction));
+        $this->DMerkle_Utility = new DMerkle_Utility;
     }
 
     /**
@@ -40,8 +27,9 @@ class DMerkle_Block
      * @param string $root_hash
      * @return boolean
      */
-    public function transactionIsPartOfBlock(string $hash_to_check, string $root_hash): bool
+    public function transactionIsPartOfBlock(array $transaction, string $root_hash): bool
     {
+        $hash_to_check = $this->DMerkle_Utility->hashTransaction($transaction);
         // check if hash is in level 0
         if (!in_array($hash_to_check, $this->block_data['full_tree'][0])) {
             return false;
@@ -58,26 +46,11 @@ class DMerkle_Block
             $next_hash_raw = $hash_sibling . $hash_to_check;
         }
 
-        $next_hash = $this->hashTransaction($next_hash_raw);
+        $next_hash = $this->DMerkle_Utility->hashTransaction($next_hash_raw);
 
         // check hashes up to root
 
         return $this->validateUpTree($next_hash, $root_hash);
-    }
-
-    /**
-     * Make sure our level always has pairs
-     *
-     * @param array $transactions
-     * @return array
-     */
-    public function getLevelPairs(array $transactions): array
-    {
-        if (count($transactions) % 2 !== 0) {
-            $last_transaction = count($transactions) - 1;
-            $transactions[count($transactions)] = $transactions[$last_transaction];
-        }
-        return $transactions;
     }
 
     /**
@@ -91,7 +64,7 @@ class DMerkle_Block
     {
         $level = 1;
         while (count($this->block_data['full_tree'][$level]) > 1) {
-            $row = $this->getLevelPairs($this->block_data['full_tree'][$level]);
+            $row = $this->DMerkle_Utility->getLevelPairs($this->block_data['full_tree'][$level]);
             if (!in_array($hash, $row)) {
                 return false;
             }
@@ -106,7 +79,7 @@ class DMerkle_Block
                 $next_hash_raw = $hash_sibling . $hash;
             }
 
-            $hash = $this->hashTransaction($next_hash_raw);
+            $hash = $this->DMerkle_Utility->hashTransaction($next_hash_raw);
 
             $level++;
         }
