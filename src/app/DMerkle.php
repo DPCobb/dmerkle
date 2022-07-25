@@ -139,25 +139,4 @@ class DMerkle
         }
         return hash('sha256', hash('sha256', $transaction));
     }
-
-    /**
-     * Validate a transaction hash belongs to the given block
-     *
-     * @param string $hash_to_check
-     * @param string $root_hash
-     * @param array $block_data
-     * @return boolean
-     */
-    public function isHashValid(string $hash_to_check, string $root_hash, array $block_data): bool
-    {
-        // check if hash is in level 0
-        if (!in_array($hash_to_check, $block_data['base'])) {
-            return false;
-        }
-        // if hash exists check if it is a left or right hash (left is always odd)
-        $is_left_sibling = array_search($hash_to_check, $block_data['base']);
-        var_dump($is_left_sibling);
-        // check hashes up to root
-        return true;
-    }
 }
