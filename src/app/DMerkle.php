@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace DMerkle;
 
-use Exception;
+use DMerkle\DMerkle_Exception;
 
 class DMerkle
 {
@@ -15,8 +15,13 @@ class DMerkle
     public function __construct()
     {
         $this->block_unique_id = hash('sha256', bin2hex(openssl_random_pseudo_bytes(32)) . microtime());
+        $this->checkMaxBlockSizeIsOk();
+    }
+
+    public function checkMaxBlockSizeIsOk(): void
+    {
         if ($this->max_block_size % 2 !== 0) {
-            throw new Exception('Max block size must be divisible by 2');
+            throw new DMerkle_Exception('Max block size must be divisible by 2');
         }
     }
 
@@ -28,16 +33,14 @@ class DMerkle
      */
     public function setBlockData(array $transaction_block):void
     {
-        if ($this->max_block_size % 2 !== 0) {
-            throw new Exception('Max block size must be divisible by 2');
-        }
+        $this->checkMaxBlockSizeIsOk();
 
         if (empty($transaction_block)) {
-            throw new Exception('Transaction Block is empty');
+            throw new DMerkle_Exception('Transaction Block is empty');
         }
 
         if (count($transaction_block) > $this->max_block_size) {
-            throw new Exception('Block size over max');
+            throw new DMerkle_Exception('Block size over max');
         }
 
         $this->transaction_block = $transaction_block;
@@ -71,9 +74,9 @@ class DMerkle
 
         for ($i = 0; $i < count($transaction_block); $i++) {
             $transaction_block = $this->getLevelPairs($transaction_block);
-            $left_sibling = json_encode($transaction_block[$i]);
+            $left_sibling = is_array($transaction_block[$i]) ? json_encode($transaction_block[$i]) : $transaction_block[$i];
             $i++;
-            $right_sibling = json_encode($transaction_block[$i]);
+            $right_sibling = is_array($transaction_block[$i]) ? json_encode($transaction_block[$i]) : $transaction_block[$i];
 
             if ($level === 0) {
                 array_push($hashes_out, $this->hashTransaction($left_sibling));
