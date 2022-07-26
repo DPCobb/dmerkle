@@ -92,4 +92,31 @@ class DMerkle_Block
 
         return hash_equals($row[0], $root_hash);
     }
+
+    /**
+     * Get the hash of this block
+     *
+     * @return string
+     */
+    public function getBlockHash():string
+    {
+        return $this->DMerkle_Utility->hashTransaction($this->block_data);
+    }
+
+    /**
+     * Check if a given previous hash is valid
+     *
+     * @param string $previous_block_unknown    The untested hash of the previous block
+     * @param string $current_block_stored_hash The stored and known hash of the current block
+     * @return boolean
+     */
+    public function previousBlockHashIsValid(string $previous_block_unknown, string $current_block_stored_hash): bool
+    {
+        $test_block_data = $this->block_data;
+        $test_block_data['header']['previous_block'] = $previous_block_unknown;
+
+        $test_block_hash = $this->DMerkle_Utility->hashTransaction($test_block_data);
+
+        return hash_equals($current_block_stored_hash, $test_block_hash);
+    }
 }

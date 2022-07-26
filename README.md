@@ -30,9 +30,9 @@ After building your queue and storing your transactions you can begin building d
 
 ```php
 use DMerkle\DMerkle;
-use DMerkle\DMerkle_Block;
 
-$DMerkle = new DMerkle;
+$previous_block_hash = '123456bcdef';
+$DMerkle = new DMerkle($previous_block_hash);
 // Data from your queue in groups equal to your max block size
 $transactions = [ ... ];
 
@@ -146,3 +146,20 @@ $DMerkle_Block = new DMerkle_Block($block_data_from_hashing);
 $transaction_is_valid = $block->transactionIsPartOfBlock($transaction_data, $root_hash);
 ```
 The `transactionIsPartOfBlock` method will return `true | false` and will validate the transaction from the base level up to the root hash by hashing it and the siblings it was hashed with up to the root hash level. This means if the hash is changed at the base level there is still no way the root hash would be the same unless the entire block was compromised and hashed again.
+
+### Validate a block
+
+It is possible to validate a block is unchanged by either recreaing or rehashing that block and using the `DMerkle_Block` class to validation the hash. To do this the previous block hash should always be passed into the current block when hashing transactions into a block. This technique means that any change in a block prior to the current one would create a different hash for the current block.
+
+```php
+use DMerkle\DMerkle_Block;
+
+$old_block = new DMerkle_Block($old_block_data);
+$old_block_hash = $old_block->getBlockHash();
+
+$current_block = new DMerkle_Block($current_block_data);
+
+$old_block_hash_is_valid = $current_block->previousBlockHashIsValid($old_block_hash, $current_block_stored_hash)
+
+```
+Since the old block hash is hashed as part of the new block if that old hash is ever changed it would cause the current blocks hash to be different thant what is stored.
