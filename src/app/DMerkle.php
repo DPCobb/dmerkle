@@ -8,18 +8,54 @@ use DMerkle\DMerkle_Utility;
 
 class DMerkle
 {
+    /**
+     * max_block_size
+     *
+     * @var integer
+     */
     public int $max_block_size = 100;
+
+    /**
+     * transaction_block
+     *
+     * @var array
+     */
     public array $transaction_block;
+
+    /**
+     * hash_tree
+     *
+     * @var array
+     */
     public array $hash_tree;
+
+    /**
+     * block_unique_id
+     *
+     * @var string
+     */
     public string $block_unique_id;
 
-    public function __construct()
+    /**
+     * previous_block_hash
+     *
+     * @var string
+     */
+    public string $previous_block_hash;
+
+    public function __construct($previous_block_hash = '')
     {
         $this->block_unique_id = hash('sha256', bin2hex(openssl_random_pseudo_bytes(32)) . microtime());
         $this->checkMaxBlockSizeIsOk();
         $this->DMerkle_Utility = new DMerkle_Utility;
+        $this->previous_block_hash = $previous_block_hash;
     }
 
+    /**
+     * Check that the set block size is allowed
+     *
+     * @return void
+     */
     public function checkMaxBlockSizeIsOk(): void
     {
         if ($this->max_block_size % 2 !== 0) {
@@ -30,7 +66,7 @@ class DMerkle
     /**
      * Set's the given block data
      *
-     * @param array $transaction_block[]
+     * @param array $transaction_block[] The block of transactions used to create this block
      * @return void
      */
     public function setBlockData(array $transaction_block):void
@@ -51,8 +87,8 @@ class DMerkle
     /**
      * Calculate the hashes for a block level
      *
-     * @param array $transaction_block
-     * @param integer $level
+     * @param array   $transaction_block The block of transactions used
+     * @param integer $level             The tree level we are in
      * @return array
      */
     public function calculateBlockHash(array $transaction_block = [], int $level = 0): array
@@ -102,14 +138,22 @@ class DMerkle
      */
     public function createBlockData(): array
     {
-        return [
+        $block_data = [
             'header' => [
                 'block_id'  => $this->block_unique_id,
                 'root_hash' => array_reverse($this->hash_tree)[0][0],
                 'completed' => date('Y-m-d H:i:s'),
+                'previous_block' => $this->previous_block_hash,
             ],
             'base'      => [ $this->hash_tree[0] ],
             'full_tree' => $this->hash_tree
+        ];
+
+        $block_hash = $this->DMerkle_Utility->hashTransaction($block_data);
+
+        return [
+            'block_data' => $block_data,
+            'block_hash' => $block_hash,
         ];
     }
 }

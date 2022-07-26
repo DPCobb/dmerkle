@@ -8,6 +8,11 @@ use DMerkle\DMerkle_Utility;
 
 class DMerkle_Block
 {
+    /**
+     * block_data
+     *
+     * @var array
+     */
     public array $block_data;
 
     public function __construct(array $block_data)
@@ -23,14 +28,14 @@ class DMerkle_Block
     /**
      * Make sure our transaction is part of the block. This creates the base level data then validates up tree
      *
-     * @param string $hash_to_check
-     * @param string $root_hash
+     * @param array  $transaction The transaction information we are validating
+     * @param string $root_hash   The root hash of the block
      * @return boolean
      */
     public function transactionIsPartOfBlock(array $transaction, string $root_hash): bool
     {
         $hash_to_check = $this->DMerkle_Utility->hashTransaction($transaction);
-        // check if hash is in level 0
+
         if (!in_array($hash_to_check, $this->block_data['full_tree'][0])) {
             return false;
         }
@@ -56,8 +61,8 @@ class DMerkle_Block
     /**
      * Validates our transaction to the root node by finding siblings
      *
-     * @param string $hash
-     * @param string $root_hash
+     * @param string $hash      The hashed value of the transaction we are validating
+     * @param string $root_hash The root hash of the block
      * @return boolean
      */
     public function validateUpTree(string $hash, string $root_hash): bool

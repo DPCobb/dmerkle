@@ -18,6 +18,6 @@ $block_data = $m->createBlockData();
 
 var_dump($block_data);
 
-$block = new DMerkle_Block($block_data);
+$block = new DMerkle_Block($block_data['block_data']);
 
-var_dump($block->transactionIsPartOfBlock([1], $block_data['header']['root_hash']));
+var_dump($block->transactionIsPartOfBlock([1], $block_data['block_data']['header']['root_hash']));
