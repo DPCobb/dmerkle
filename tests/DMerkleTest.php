@@ -6,44 +6,54 @@ use DMerkle\DMerkle_Exception;
 
 class DMerkleTest extends TestCase
 {
-    public function setup(): void {
+    public function setup(): void
+    {
         $this->block_data = [];
         for ($i = 1; $i <= 4; $i++) {
             array_push($this->block_data, [$i]);
         }
     }
 
-    public function testMaxBlockSizeIsOkThrowsException() {
-        $DMerkle = new class extends DMerkle {};
+    public function testMaxBlockSizeIsOkThrowsException()
+    {
+        $DMerkle = new class extends DMerkle {
+        };
         $DMerkle->max_block_size = 3;
         $this->expectException(DMerkle_Exception::class);
 
         $DMerkle->checkMaXBlockSizeIsOk();
     }
 
-    public function testTransactionBlockIsSet() {
-        $DMerkle = new class extends DMerkle {};
+    public function testTransactionBlockIsSet()
+    {
+        $DMerkle = new class extends DMerkle {
+        };
         $DMerkle->setBlockData($this->block_data);
 
         $this->assertEquals($this->block_data, $DMerkle->transaction_block);
     }
 
-    public function testTransactionBlockThrowsExceptionOnEmptyBlock() {
-        $DMerkle = new class extends DMerkle {};
+    public function testTransactionBlockThrowsExceptionOnEmptyBlock()
+    {
+        $DMerkle = new class extends DMerkle {
+        };
         $this->expectException(DMerkle_Exception::class);
         $DMerkle->setBlockData([]);
     }
 
-    public function testTransactionBlockTooLargeThrowsException(){
-        $DMerkle = new class extends DMerkle {
+    public function testTransactionBlockTooLargeThrowsException()
+    {
+        $DMerkle                       = new class extends DMerkle {
             public int $max_block_size = 2;
         };
         $this->expectException(DMerkle_Exception::class);
         $DMerkle->setBlockData($this->block_data);
     }
 
-    public function testRunBlockCalculationReturnsHashTree() {
-        $DMerkle = new class extends DMerkle {};
+    public function testRunBlockCalculationReturnsHashTree()
+    {
+        $DMerkle = new class extends DMerkle {
+        };
         $DMerkle->setBlockData($this->block_data);
 
         $hash_tree = $DMerkle->runBlockCalculation();
@@ -52,13 +62,16 @@ class DMerkleTest extends TestCase
         $this->assertEquals(3, count($hash_tree));
     }
 
-    public function testTwoIdenticalBlocksProduceSameRootHash() {
-        $DMerkle = new class extends DMerkle {};
+    public function testTwoIdenticalBlocksProduceSameRootHash()
+    {
+        $DMerkle = new class extends DMerkle {
+        };
         $DMerkle->setBlockData($this->block_data);
 
         $hash_tree = $DMerkle->runBlockCalculation();
 
-        $DMerkle_Two = new class extends DMerkle {};
+        $DMerkle_Two = new class extends DMerkle {
+        };
         $DMerkle_Two->setBlockData($this->block_data);
 
         $hash_tree_two = $DMerkle->runBlockCalculation();
@@ -67,8 +80,10 @@ class DMerkleTest extends TestCase
         $this->assertSame($hash_tree[2][0], $hash_tree_two[2][0]);
     }
 
-    public function testBlockDataCreates() {
-        $DMerkle = new class extends DMerkle {};
+    public function testBlockDataCreates()
+    {
+        $DMerkle = new class extends DMerkle {
+        };
         $DMerkle->setBlockData($this->block_data);
 
         $DMerkle->runBlockCalculation();
