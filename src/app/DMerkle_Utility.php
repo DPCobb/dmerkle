@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace DMerkle;
 
 class DMerkle_Utility
@@ -8,7 +7,7 @@ class DMerkle_Utility
     /**
      * Hash transactions
      *
-     * @param mixed $transaction
+     * @param  mixed  $transaction
      * @return string
      */
     public function hashTransaction($transaction): string
@@ -22,13 +21,13 @@ class DMerkle_Utility
     /**
      * Make sure our level always has pairs
      *
-     * @param array $transactions
+     * @param  array $transactions
      * @return array
      */
     public function getLevelPairs(array $transactions): array
     {
         if (count($transactions) % 2 !== 0) {
-            $last_transaction = count($transactions) - 1;
+            $last_transaction                   = count($transactions) - 1;
             $transactions[count($transactions)] = $transactions[$last_transaction];
         }
         return $transactions;

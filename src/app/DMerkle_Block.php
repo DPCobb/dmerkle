@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace DMerkle;
 
 use DMerkle\DMerkle_Exception;
@@ -15,21 +14,28 @@ class DMerkle_Block
      */
     public array $block_data;
 
+    /**
+     * DMerkle_Utility
+     *
+     * @var DMerkle_Utility
+     */
+    public DMerkle_Utility $DMerkle_Utility;
+
     public function __construct(array $block_data)
     {
         if (empty($block_data)) {
             throw new DMerkle_Exception('Block data is empty!');
         }
 
-        $this->block_data = $block_data;
+        $this->block_data      = $block_data;
         $this->DMerkle_Utility = new DMerkle_Utility;
     }
 
     /**
      * Make sure our transaction is part of the block. This creates the base level data then validates up tree
      *
-     * @param array  $transaction The transaction information we are validating
-     * @param string $root_hash   The root hash of the block
+     * @param  array   $transaction The transaction information we are validating
+     * @param  string  $root_hash   The root hash of the block
      * @return boolean
      */
     public function transactionIsPartOfBlock(array $transaction, string $root_hash): bool
@@ -41,13 +47,13 @@ class DMerkle_Block
         }
 
         $hash_position_in_base = array_search($hash_to_check, $this->block_data['full_tree'][0]);
-        $is_left_sibling = $hash_position_in_base % 2 === 0;
+        $is_left_sibling       = $hash_position_in_base % 2 === 0;
 
         if ($is_left_sibling) {
-            $hash_sibling = $this->block_data['full_tree'][0][$hash_position_in_base + 1];
+            $hash_sibling  = $this->block_data['full_tree'][0][$hash_position_in_base + 1];
             $next_hash_raw = $hash_to_check . $hash_sibling;
         } else {
-            $hash_sibling = $this->block_data['full_tree'][0][$hash_position_in_base - 1];
+            $hash_sibling  = $this->block_data['full_tree'][0][$hash_position_in_base - 1];
             $next_hash_raw = $hash_sibling . $hash_to_check;
         }
 
@@ -61,8 +67,8 @@ class DMerkle_Block
     /**
      * Validates our transaction to the root node by finding siblings
      *
-     * @param string $hash      The hashed value of the transaction we are validating
-     * @param string $root_hash The root hash of the block
+     * @param  string  $hash      The hashed value of the transaction we are validating
+     * @param  string  $root_hash The root hash of the block
      * @return boolean
      */
     public function validateUpTree(string $hash, string $root_hash): bool
@@ -74,13 +80,13 @@ class DMerkle_Block
                 return false;
             }
             $hash_position_in_base = array_search($hash, $row);
-            $is_left_sibling = $hash_position_in_base % 2 === 0;
-        
+            $is_left_sibling       = $hash_position_in_base % 2 === 0;
+
             if ($is_left_sibling) {
-                $hash_sibling = $row[$hash_position_in_base + 1];
+                $hash_sibling  = $row[$hash_position_in_base + 1];
                 $next_hash_raw = $hash . $hash_sibling;
             } else {
-                $hash_sibling = $row[$hash_position_in_base - 1];
+                $hash_sibling  = $row[$hash_position_in_base - 1];
                 $next_hash_raw = $hash_sibling . $hash;
             }
 
@@ -106,13 +112,13 @@ class DMerkle_Block
     /**
      * Check if a given previous hash is valid
      *
-     * @param string $previous_block_unknown    The untested hash of the previous block
-     * @param string $current_block_stored_hash The stored and known hash of the current block
+     * @param  string  $previous_block_unknown    The untested hash of the previous block
+     * @param  string  $current_block_stored_hash The stored and known hash of the current block
      * @return boolean
      */
     public function previousBlockHashIsValid(string $previous_block_unknown, string $current_block_stored_hash): bool
     {
-        $test_block_data = $this->block_data;
+        $test_block_data                             = $this->block_data;
         $test_block_data['header']['previous_block'] = $previous_block_unknown;
 
         $test_block_hash = $this->DMerkle_Utility->hashTransaction($test_block_data);
