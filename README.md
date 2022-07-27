@@ -5,6 +5,7 @@
 ![Version](https://img.shields.io/badge/Version:%201.0.0-green)
 ![PHP](https://img.shields.io/badge/PHP%20^7.4-777BB4?logo=php&logoColor=white)
 ![PHPUnit](https://github.com/dpcobb/DMerkle/actions/workflows/php.yml/badge.svg)
+![PHPStan](https://github.com/dpcobb/DMerkle/actions/workflows/phpstan.yml/badge.svg)
 
 
 This library is a work In Progress.
