@@ -28,6 +28,7 @@
     "scripts": {
         "test": "src/vendor/bin/phpunit tests/",
         "stan": "src/vendor/bin/phpstan analyse -c phpstan.neon",
-        "phpcs": "src/vendor/bin/phpcbf -p --colors --standard=phpcs.xml src/app; src/vendor/bin/phpcs -n --colors --standard=phpcs.xml src/app"
+        "phpcs": "src/vendor/bin/phpcbf -p --colors --standard=phpcs.xml src/app; src/vendor/bin/phpcs -n --colors --standard=phpcs.xml src/app",
+        "check": "composer run-script test; composer run-script stan"
     }
 }
