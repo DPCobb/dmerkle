@@ -8,6 +8,13 @@ use DMerkle\DMerkle_Exception;
 
 class DMerkle_BlockTest extends TestCase
 {
+    /**
+     * block_data
+     *
+     * @var array
+     */
+    protected array $block_data;
+
     public function setup(): void
     {
         $this->block_data = [];
