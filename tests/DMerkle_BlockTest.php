@@ -6,6 +6,9 @@ use DMerkle\DMerkle_Block;
 use DMerkle\DMerkle_Utility;
 use DMerkle\DMerkle_Exception;
 
+/**
+ * @covers DMerkle\DMerkle_Block
+ */
 class DMerkle_BlockTest extends TestCase
 {
     /**

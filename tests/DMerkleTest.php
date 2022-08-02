@@ -4,6 +4,9 @@ use PHPUnit\Framework\TestCase;
 use DMerkle\DMerkle;
 use DMerkle\DMerkle_Exception;
 
+/**
+ * @covers DMerkle\DMerkle
+ */
 class DMerkleTest extends TestCase
 {
     /**
