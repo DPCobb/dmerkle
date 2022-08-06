@@ -6,9 +6,6 @@
 ![PHPUnit](https://github.com/dpcobb/DMerkle/actions/workflows/php.yml/badge.svg)
 ![PHPStan](https://github.com/dpcobb/DMerkle/actions/workflows/phpstan.yml/badge.svg)
 
-
-This library is a work In Progress.
-
 ## Description
 
 A PHP implementation of a Merkle Hash tree. Completed hashes are returned in blocks and proof of inclusion can be run on blocks to check if transactions are included in that block.
