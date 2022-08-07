@@ -8,6 +8,8 @@
 
 ## Description
 
+Install with: `composer require danc0/dmerkle`
+
 A PHP implementation of a Merkle Hash tree. Completed hashes are returned in blocks and proof of inclusion can be run on blocks to check if transactions are included in that block.
 
 ## Usage
